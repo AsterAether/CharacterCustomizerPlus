@@ -1,0 +1,11 @@
+{
+  "name": "CharacterCustomizerPlus",
+  "version_number": "<version>",
+  "website_url": "https://github.com/AsterAether/CharacterCustomizerPlus",
+  "description": "Customize your Survivors even more!",
+  "dependencies": [
+    "tristanmcpherson-R2API-2.3.22",
+    "bbepis-BepInExPack-3.0.0",
+    "AsterAether-CharacterCustomizer-1.0.0"
+  ]
+}
