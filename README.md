@@ -1,6 +1,7 @@
 # CharacterCustomizerPlus 
 #### by Aster
 **DISCLAIMER: This mod is currently heavy WIP, as it is mostly just ported code from the old version. Expect many breakin bugs!**
+**If you find any bugs, please write me a PN on Discord!**
 
 Customize your Survivors even more!
 This mod adds even more customization options to your survivors, and even new features like resetting your secondary cooldown on a Commando dash! (And many more)
