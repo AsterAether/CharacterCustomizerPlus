@@ -6,7 +6,7 @@
 Customize your Survivors even more!
 This mod adds even more customization options to your survivors, and even new features like resetting your secondary cooldown on a Commando dash! (And many more)
 
-**This mod is a companion mod to [CharacterCustomizerPlus](https://thunderstore.io/package/AsterAether/CharacterCustomizerPlus/), and contains old features from that mod!**
+**This mod is a companion mod to [CharacterCustomizer](https://thunderstore.io/package/AsterAether/CharacterCustomizer/), and contains old features from that mod!**
 
 ## Features
 

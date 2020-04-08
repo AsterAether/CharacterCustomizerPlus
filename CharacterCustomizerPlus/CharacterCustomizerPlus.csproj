@@ -27,7 +27,7 @@
       <Reference Include="Assembly-CSharp.R2API.mm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\monomod\Assembly-CSharp.R2API.mm.dll</HintPath>
       </Reference>
-      <Reference Include="BepInEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="BepInEx">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\core\BepInEx.dll</HintPath>
       </Reference>
       <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -36,7 +36,7 @@
       <Reference Include="BepInEx.MonoMod.Loader, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\patchers\BepInEx.MonoMod.Loader\BepInEx.MonoMod.Loader.dll</HintPath>
       </Reference>
-      <Reference Include="BepInEx.Preloader, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="BepInEx.Preloader">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\core\BepInEx.Preloader.dll</HintPath>
       </Reference>
       <Reference Include="CharacterCustomizer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -57,16 +57,13 @@
       <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\core\Mono.Cecil.Rocks.dll</HintPath>
       </Reference>
-      <Reference Include="MonoMod.RuntimeDetour, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="MonoMod.RuntimeDetour">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\core\MonoMod.RuntimeDetour.dll</HintPath>
       </Reference>
-      <Reference Include="MonoMod.Utils, Version=19.11.5.1, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="MonoMod.Utils">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\core\MonoMod.Utils.dll</HintPath>
       </Reference>
       <Reference Include="R2API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API\R2API.dll</HintPath>
-      </Reference>
-      <Reference Include="R2API, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\..\..\Games\SteamLibary\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API\R2API.dll</HintPath>
       </Reference>
       <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">

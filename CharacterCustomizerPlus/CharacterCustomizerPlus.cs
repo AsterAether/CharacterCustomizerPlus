@@ -54,6 +54,7 @@ namespace CharacterCustomizerPlus
 
             foreach (var customSurvivor in CustomPlusSurvivors)
             {
+                Logger.LogInfo("Patching survivor " + customSurvivor.CharacterName);
                 customSurvivor.Patch();
                 
                 if (CreateReadme.Value)

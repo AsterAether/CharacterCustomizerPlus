@@ -31,15 +31,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             public FieldConfigWrapper<float> LaserDamageCoefficient;
 
             public List<IFieldChanger> LaserFields;
-
-            public ConfigEntryDescriptionWrapper<bool> DashResetsSecondCooldown;
-
-            public ConfigEntryDescriptionWrapper<bool> DashInvulnerability;
-
-            public ConfigEntryDescriptionWrapper<float> DashInvulnerabilityTimer;
-
-            public List<IFieldChanger> DashFields;
-
+            
             public FieldConfigWrapper<float> BarrageBaseDurationBetweenShots;
 
             public FieldConfigWrapper<int> BarrageBaseShotAmount;
@@ -63,7 +55,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                 };
 
                 PistolHitLowerBarrageCooldownPercent = BindConfigFloat("PistolHitLowerBarrageCooldownPercent",
-                    "The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have PistolHitLowerBarrageCooldownPercent set.");
+                    "The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have PistolHitLowerBarrageCooldown set.");
 
 
                 PistolHitLowerBarrageCooldown =
@@ -79,20 +71,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                 {
                     LaserDamageCoefficient
                 };
-
-                // Dash
-
-                DashResetsSecondCooldown =
-                    BindConfigBool("DashResetsSecondCooldown",
-                        "If the dash should reset the cooldown of the second ability.");
-
-                DashInvulnerability = BindConfigBool("DashInvulnerability",
-                    "If Commando should be invulnerable while dashing.");
-
-                DashInvulnerabilityTimer = BindConfigFloat("DashInvulnerabilityTimer",
-                    "How long Commando should be invincible for when dashing. Only active when DashInvulnerability is on. 0 = For the whole dash.");
-
-
+                
                 // Barrage
 
                 BarrageBaseShotAmount =
@@ -133,53 +112,39 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                     orig(self);
                 };
                 
-                On.EntityStates.Commando.DodgeState.OnEnter += (orig, self) =>
-                {
-                    orig(self);
+                // On.EntityStates.Commando.DodgeState.OnEnter += (orig, self) =>
+                // {
+                //     orig(self);
+                //
+                //     if (DashInvulnerability.Value)
+                //     {
+                //         if (DashInvulnerabilityTimer.IsDefault())
+                //         {
+                //             Transform transform = self.InvokeMethod<Transform>("GetModelTransform");
+                //
+                //             HurtBoxGroup hurtBoxGroup = transform.GetComponent<HurtBoxGroup>();
+                //             ++hurtBoxGroup.hurtBoxesDeactivatorCounter;
+                //         }
+                //         else
+                //         {
+                //             self.outer.commonComponents.characterBody.AddTimedBuff(BuffIndex.HiddenInvincibility,
+                //                 DashInvulnerabilityTimer.Value);
+                //         }
+                //     }
+                // };
                 
-                    if (DashResetsSecondCooldown.Value)
-                    {
-                        Assembly assembly = self.GetType().Assembly;
-                
-                        Type entityState = assembly.GetClass("EntityStates", "EntityState");
-                
-                        SkillLocator locator = (SkillLocator) entityState
-                            .GetProperty("skillLocator", BindingFlags.NonPublic | BindingFlags.Instance)
-                            ?.GetValue(self, null);
-                
-                        GenericSkill skill2 = locator.GetSkill(SkillSlot.Secondary);
-                        skill2.Reset();
-                    }
-                
-                    if (DashInvulnerability.Value)
-                    {
-                        if (DashInvulnerabilityTimer.IsDefault())
-                        {
-                            Transform transform = self.InvokeMethod<Transform>("GetModelTransform");
-                
-                            HurtBoxGroup hurtBoxGroup = transform.GetComponent<HurtBoxGroup>();
-                            ++hurtBoxGroup.hurtBoxesDeactivatorCounter;
-                        }
-                        else
-                        {
-                            self.outer.commonComponents.characterBody.AddTimedBuff(BuffIndex.HiddenInvincibility,
-                                DashInvulnerabilityTimer.Value);
-                        }
-                    }
-                };
-                
-                On.EntityStates.Commando.DodgeState.OnExit += (orig, self) =>
-                {
-                    if (DashInvulnerability.Value && DashInvulnerabilityTimer.IsDefault())
-                    {
-                        Transform transform = self.InvokeMethod<Transform>("GetModelTransform");
-                
-                        HurtBoxGroup hurtBoxGroup = transform.GetComponent<HurtBoxGroup>();
-                        --hurtBoxGroup.hurtBoxesDeactivatorCounter;
-                    }
-                
-                    orig(self);
-                };
+                // On.EntityStates.Commando.DodgeState.OnExit += (orig, self) =>
+                // {
+                //     if (DashInvulnerability.Value && DashInvulnerabilityTimer.IsDefault())
+                //     {
+                //         Transform transform = self.InvokeMethod<Transform>("GetModelTransform");
+                //
+                //         HurtBoxGroup hurtBoxGroup = transform.GetComponent<HurtBoxGroup>();
+                //         --hurtBoxGroup.hurtBoxesDeactivatorCounter;
+                //     }
+                //
+                //     orig(self);
+                // };
                 
                 
                 if (PistolHitLowerBarrageCooldown.Value && PistolHitLowerBarrageCooldownPercent.IsNotDefault())
