@@ -1,6 +1,6 @@
 {
   "name": "CharacterCustomizerPlus",
-  "version_number": "<version>",
+  "version_number": "0.2.1",
   "website_url": "https://github.com/AsterAether/CharacterCustomizerPlus",
   "description": "Customize your Survivors even more!",
   "dependencies": [

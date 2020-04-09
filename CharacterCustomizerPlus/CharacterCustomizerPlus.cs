@@ -18,7 +18,7 @@ namespace CharacterCustomizerPlus
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInDependency("at.aster.charactercustomizer")]
-    [BepInPlugin("at.aster.charactercustomizerplus", "CharacterCustomizerPlus", "<version>")]
+    [BepInPlugin("at.aster.charactercustomizerplus", "CharacterCustomizerPlus", "0.2.1")]
     public class CharacterCustomizerPlus : BaseUnityPlugin
     {
         public List<CustomPlusSurvivor> CustomPlusSurvivors;

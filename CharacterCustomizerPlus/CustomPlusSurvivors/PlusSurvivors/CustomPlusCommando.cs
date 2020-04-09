@@ -18,73 +18,73 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             {
             }
 
-            public ConfigEntryDescriptionWrapper<bool> PistolHitLowerBarrageCooldown;
+            public ConfigEntryDescriptionWrapper<bool> DoubleTapHitLowerSpecialCooldown;
 
-            public ConfigEntryDescriptionWrapper<float> PistolHitLowerBarrageCooldownPercent;
+            public ConfigEntryDescriptionWrapper<float> DoubleTapHitLowerSpecialCooldownPercent;
 
-            public FieldConfigWrapper<float> PistolDamageCoefficient;
+            public FieldConfigWrapper<float> DoubleTapDamageCoefficient;
 
-            public FieldConfigWrapper<float> PistolBaseDuration;
+            public FieldConfigWrapper<float> DoubleTapBaseDuration;
 
-            public List<IFieldChanger> PistolFields;
+            public List<IFieldChanger> DoubleTapFields;
 
-            public FieldConfigWrapper<float> LaserDamageCoefficient;
+            public FieldConfigWrapper<float> PhaseRoundDamageCoefficient;
 
-            public List<IFieldChanger> LaserFields;
+            public List<IFieldChanger> PhaseRoundFields;
             
-            public FieldConfigWrapper<float> BarrageBaseDurationBetweenShots;
+            public FieldConfigWrapper<float> SuppressiveFireBaseDurationBetweenShots;
 
-            public FieldConfigWrapper<int> BarrageBaseShotAmount;
+            public FieldConfigWrapper<int> SuppressiveFireBaseShotAmount;
 
-            public List<IFieldChanger> BarrageFields;
+            public List<IFieldChanger> SuppressiveFireFields;
 
             public override void InitConfigValues()
             {
                 // Pistol
-                PistolDamageCoefficient = new FieldConfigWrapper<float>(BindConfigFloat("PistolDamageCoefficient",
-                    "Damage coefficient for the pistol, in percent."), "damageCoefficient", true);
+                DoubleTapDamageCoefficient = new FieldConfigWrapper<float>(BindConfigFloat("DoubleTapDamageCoefficient",
+                    "Damage coefficient for the Double Tap, in percent."), "damageCoefficient", true);
 
-                PistolBaseDuration =
-                    new FieldConfigWrapper<float>(BindConfigFloat("PistolBaseDuration",
-                        "Base duration for the pistol shot, in percent. (Attack Speed)"), "baseDuration", true);
+                DoubleTapBaseDuration =
+                    new FieldConfigWrapper<float>(BindConfigFloat("DoubleTapBaseDuration",
+                        "Base duration for the Double Tap shot, in percent. (Attack Speed)"), "baseDuration", true);
 
-                PistolFields = new List<IFieldChanger>
+                DoubleTapFields = new List<IFieldChanger>
                 {
-                    PistolBaseDuration,
-                    PistolDamageCoefficient
+                    DoubleTapBaseDuration,
+                    DoubleTapDamageCoefficient
                 };
 
-                PistolHitLowerBarrageCooldownPercent = BindConfigFloat("PistolHitLowerBarrageCooldownPercent",
-                    "The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have PistolHitLowerBarrageCooldown set.");
+                DoubleTapHitLowerSpecialCooldownPercent = BindConfigFloat("DoubleTapHitLowerSpecialCooldownPercent",
+                    "The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have DoubleTapHitLowerSpecialCooldown set.");
 
 
-                PistolHitLowerBarrageCooldown =
-                    BindConfigBool("PistolHitLowerBarrageCooldown",
-                        "If the pistol hit should lower the Barrage Skill cooldown. Needs to have PistolHitLowerBarrageCooldownPercent set to work");
+                DoubleTapHitLowerSpecialCooldown =
+                    BindConfigBool("DoubleTapHitLowerSpecialCooldown",
+                        "If the pistol hit should lower the Special Skill cooldown. Needs to have DoubleTapHitLowerSpecialCooldownPercent set to work");
 
                 // Laser
 
-                LaserDamageCoefficient = new FieldConfigWrapper<float>(BindConfigFloat("LaserDamageCoefficient",
-                    "Damage coefficient for the secondary laser, in percent."), "damageCoefficient");
+                PhaseRoundDamageCoefficient = new FieldConfigWrapper<float>(BindConfigFloat("PhaseRoundDamageCoefficient",
+                    "Damage coefficient for the secondary phase round, in percent."), "damageCoefficient");
 
-                LaserFields = new List<IFieldChanger>
+                PhaseRoundFields = new List<IFieldChanger>
                 {
-                    LaserDamageCoefficient
+                    PhaseRoundDamageCoefficient
                 };
                 
                 // Barrage
 
-                BarrageBaseShotAmount =
+                SuppressiveFireBaseShotAmount =
                     new FieldConfigWrapper<int>(
-                        BindConfigInt("BarrageBaseShotAmount", "How many shots the Barrage skill should when ATKSP = 1"),
+                        BindConfigInt("SuppressiveFireBaseShotAmount", "How many shots the Suppressive Fire skill should when ATKSP = 1"),
                         "baseBulletCount", true);
 
 
-                BarrageBaseDurationBetweenShots =
-                    new FieldConfigWrapper<float>(BindConfigFloat("BarrageBaseDurationBetweenShots",
-                        "Base duration between shots in the Barrage skill."), "baseDurationBetweenShots", true);
+                SuppressiveFireBaseDurationBetweenShots =
+                    new FieldConfigWrapper<float>(BindConfigFloat("SuppressiveFireBaseDurationBetweenShots",
+                        "Base duration between shots in the Suppressive Fire skill."), "baseDurationBetweenShots", true);
 
-                BarrageFields = new List<IFieldChanger> {BarrageBaseShotAmount, BarrageBaseDurationBetweenShots};
+                SuppressiveFireFields = new List<IFieldChanger> {SuppressiveFireBaseShotAmount, SuppressiveFireBaseDurationBetweenShots};
             }
 
             public override void OverrideGameValues()
@@ -96,11 +96,11 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                 
                     Type firePistol = assembly.GetClass("EntityStates.Commando.CommandoWeapon", "FirePistol2");
                 
-                    PistolFields.ForEach(changer => changer.Apply(firePistol));
+                    DoubleTapFields.ForEach(changer => changer.Apply(firePistol));
                     
                     Type fireBarr = assembly.GetClass("EntityStates.Commando.CommandoWeapon", "FireBarrage");
                 
-                    BarrageFields.ForEach(changer => changer.Apply(fireBarr));
+                    SuppressiveFireFields.ForEach(changer => changer.Apply(fireBarr));
                 };
             }
 
@@ -108,7 +108,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             {
                 On.EntityStates.Commando.CommandoWeapon.FireFMJ.OnEnter += (orig, self) =>
                 {
-                    LaserFields.ForEach(changer => changer.Apply(self));
+                    PhaseRoundFields.ForEach(changer => changer.Apply(self));
                     orig(self);
                 };
                 
@@ -147,7 +147,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                 // };
                 
                 
-                if (PistolHitLowerBarrageCooldown.Value && PistolHitLowerBarrageCooldownPercent.IsNotDefault())
+                if (DoubleTapHitLowerSpecialCooldown.Value && DoubleTapHitLowerSpecialCooldownPercent.IsNotDefault())
                 {
                     Type gsType = typeof(GenericSkill);
                     FieldInfo finalRechargeInterval = gsType.GetField("finalRechargeInterval",
@@ -169,7 +169,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                                     GenericSkill special = skillLocator.special;
                                     special.rechargeStopwatch = special.rechargeStopwatch +
                                         (float) finalRechargeInterval.GetValue(special) *
-                                        PistolHitLowerBarrageCooldownPercent.Value;
+                                        DoubleTapHitLowerSpecialCooldownPercent.Value;
                                 }
                 
                                 return result;

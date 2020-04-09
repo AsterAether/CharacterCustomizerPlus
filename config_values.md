@@ -3,13 +3,13 @@
 * **PrintReadme:** Outputs a file called "config_values.md" to the working directory, containing all config values formatted as Markdown. (Only used for development purposes)
 # Artificer
 # Commando
-* **BarrageBaseDurationBetweenShots:** Base duration between shots in the Barrage skill.
-* **BarrageBaseShotAmount:** How many shots the Barrage skill should when ATKSP = 1
-* **LaserDamageCoefficient:** Damage coefficient for the secondary laser, in percent.
-* **PistolBaseDuration:** Base duration for the pistol shot, in percent. (Attack Speed)
-* **PistolDamageCoefficient:** Damage coefficient for the pistol, in percent.
-* **PistolHitLowerBarrageCooldown:** If the pistol hit should lower the Barrage Skill cooldown. Needs to have PistolHitLowerBarrageCooldownPercent set to work
-* **PistolHitLowerBarrageCooldownPercent:** The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have PistolHitLowerBarrageCooldown set.
+* **DoubleTapBaseDuration:** Base duration for the Double Tap shot, in percent. (Attack Speed)
+* **DoubleTapDamageCoefficient:** Damage coefficient for the Double Tap, in percent.
+* **DoubleTapHitLowerSpecialCooldown:** If the pistol hit should lower the Special Skill cooldown. Needs to have DoubleTapHitLowerSpecialCooldownPercent set to work
+* **DoubleTapHitLowerSpecialCooldownPercent:** The amount in percent that the current cooldown of the Barrage Skill should be lowered by. Needs to have DoubleTapHitLowerSpecialCooldown set.
+* **PhaseRoundDamageCoefficient:** Damage coefficient for the secondary phase round, in percent.
+* **SuppressiveFireBaseDurationBetweenShots:** Base duration between shots in the Suppressive Fire skill.
+* **SuppressiveFireBaseShotAmount:** How many shots the Suppressive Fire skill should when ATKSP = 1
 # Acrid
 # Engineer
 * **GrenadeMaxChargeTime:** Maximum charge time (animation) for grenades, in seconds.
