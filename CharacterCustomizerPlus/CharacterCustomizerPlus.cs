@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,20 +11,66 @@ using CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
+using R2API.Utils;
 using RoR2;
+using RoR2.ContentManagement;
 using RoR2.UI;
 using UnityEngine;
 
 namespace CharacterCustomizerPlus
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInDependency("at.aster.charactercustomizer")]
-    [BepInPlugin("at.aster.charactercustomizerplus", "CharacterCustomizerPlus", "0.2.1")]
+    [BepInDependency("Aster.CharacterCustomizer")]
+    [BepInPlugin("Aster.CharacterCustomizerPlus", "CharacterCustomizerPlus", "<version>")]
+    [R2APISubmoduleDependency(nameof(SurvivorAPI))]
     public class CharacterCustomizerPlus : BaseUnityPlugin
     {
-        public List<CustomPlusSurvivor> CustomPlusSurvivors;
+        private List<CustomPlusSurvivor> _plusSurvivors;
 
-        public ConfigEntry<bool> CreateReadme;
+        private ConfigEntry<bool> CreateReadme;
+
+
+        private IEnumerator AfterLoad(On.RoR2.RoR2Application.orig_OnLoad orig, RoR2Application self)
+        {
+            yield return orig(self);
+
+
+            foreach (var survivorDef in ContentManager.survivorDefs)
+            {
+                var plusSurvivor = _plusSurvivors
+                    .FirstOrDefault(survivor => survivor.CachedName.Equals(survivorDef.cachedName));
+                if (plusSurvivor == null)
+                {
+                    Logger.LogInfo(survivorDef.cachedName + " is not supported by CharacterCustomizerPlus!");
+                    continue;
+                }
+                plusSurvivor.InitContent(survivorDef);
+                Logger.LogInfo("Loaded values for " + plusSurvivor.CommonName);
+            }
+
+            if (!CreateReadme.Value) yield break;
+            var markdown = new StringBuilder("# Config Values\n");
+
+            markdown.AppendLine("## General");
+            markdown.AppendLine(CreateReadme.ToMarkdownString());
+
+            foreach (var customSurvivor in _plusSurvivors)
+            {
+                markdown.AppendLine("# " + customSurvivor.CommonName);
+                var markdownLines = customSurvivor.MarkdownConfigEntries
+                    .Select(markdownDef => markdownDef.ToMarkdownString()).ToList();
+
+                markdownLines.Sort();
+
+                foreach (var markdownLine in markdownLines)
+                {
+                    markdown.AppendLine(markdownLine);
+                }
+            }
+
+            System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"\config_values.md",
+                markdown.ToString());
+        }
 
         private void Awake()
         {
@@ -32,55 +79,25 @@ namespace CharacterCustomizerPlus
                 "PrintReadme",
                 false,
                 "Outputs a file called \"config_values.md\" to the working directory, containing all config values formatted as Markdown. (Only used for development purposes)");
-
-            CustomPlusSurvivors = new List<CustomPlusSurvivor>
+            _plusSurvivors = new List<CustomPlusSurvivor>
             {
-                new CustomPlusArtificer(Config),
-                new CustomPlusCommando(Config),
-                new CustomPlusCroco(Config),
-                new CustomPlusEngineer(Config),
-                new CustomPlusHuntress(Config),
-                new CustomPlusLoader(Config),
-                new CustomPlusMercenary(Config),
-                new CustomPlusMulT(Config),
-                new CustomPlusTreebot(Config)
+                new CustomPlusCommando(Config, Logger),
+                new CustomPlusEngineer(Config, Logger)
             };
 
+            On.RoR2.RoR2Application.OnLoad += AfterLoad;
+        }
 
-            StringBuilder markdown = new StringBuilder("# Config Values\n");
+        private void OnDestroy()
+        {
+            _plusSurvivors.ForEach(survivor => survivor.OnStop());
+            Config.Save();
+        }
 
-            markdown.AppendLine("## General");
-            markdown.AppendLine(CreateReadme.ToMarkdownString());
-
-            foreach (var customSurvivor in CustomPlusSurvivors)
-            {
-                Logger.LogInfo("Patching survivor " + customSurvivor.CharacterName);
-                customSurvivor.Patch();
-                
-                if (CreateReadme.Value)
-                {
-                    markdown.AppendLine("# " + customSurvivor.CharacterName);
-                    List<string> markdownLines = new List<string>();
-
-                    foreach (IMarkdownString markdownDef in customSurvivor.MarkdownConfigEntries)
-                    {
-                        markdownLines.Add(markdownDef.ToMarkdownString());
-                    }
-
-                    markdownLines.Sort();
-
-                    foreach (var markdownLine in markdownLines)
-                    {
-                        markdown.AppendLine(markdownLine);
-                    }
-                }
-            }
-
-            if (CreateReadme.Value)
-            {
-                System.IO.File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"\config_values.md",
-                    markdown.ToString());
-            }
+        private void OnApplicationQuit()
+        {
+            _plusSurvivors.ForEach(survivor => survivor.OnStop());
+            Config.Save();
         }
     }
 }

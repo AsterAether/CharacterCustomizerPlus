@@ -1,7 +1,5 @@
 # CharacterCustomizerPlus 
 #### by Aster
-**DISCLAIMER: This mod is currently heavy WIP, as it is mostly just ported code from the old version. Expect many breakin bugs!**
-**If you find any bugs, please write me a PN on Discord!**
 
 Customize your Survivors even more!
 This mod adds even more customization options to your survivors, and even new features like resetting your secondary cooldown on a Commando dash! (And many more)
@@ -13,21 +11,14 @@ This mod adds even more customization options to your survivors, and even new fe
 * Change a wide variety of settings on your Survivor, from damage output to completely new features.
 * Doesn't overwrite default values if the config value is set to 0,
   improving forward compatibility.
-* Multiplayer compatible, players can even have different configs if they want!
-
-## Installation
-
-* Install [CharacterCustomizerPlus](https://thunderstore.io/package/AsterAether/CharacterCustomizerPlus/) first.
-* Copy the included `CharacterCustomizer.dll` into your BepInEx plugins
-  folder.
-* Start up the game! This will create the config file. Note that this
-  can take a little longer, there are a lot of values to be checked and
-  created.
-
+  
 ## Configuration
 
 It is highly recommended to use [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager) to edit the configuration values in-game with the F1 key.
-**Live update is currently NOT supported!**
+Or something like r2modmans config editor.
+
+To generate the config options for a survivor, you need to set the "Enabled" option to true for this character and restart the game.
+
 
 The configuration file is located in the config folder of BepInEx, called at.aster.charactercustomizerplus.cfg. 
 It initializes with all values set to their default values. If a value is left with the default one (0 in cases of numbers), 
@@ -35,10 +26,10 @@ the executing code in the plugin will be skipped, and vanilla risk of rain behav
 
 A sample config line would look like this:
 ```
-## Maximum charge duration (logic) for grenades, in seconds. Vanilla value: 3
-# Setting type: Single
-# Default value: 0
-GrenadeTotalChargeDuration = 0
+## If changes for this character are enabled. Set to true to generate options on next startup!
+# Setting type: Boolean
+# Default value: false
+Captain Enabled = false
 ```
 The first line is a comment explaining the configuration value, and is automatically updated by the game to include the vanilla RoR2 value of the stat, where possible.
 The second line is the type of value expected (Single = Decimal).
@@ -53,6 +44,11 @@ Please use dots for separating the decimal values (0.1) and not commas (0,1).
 
 **See:**
 [Config Values](https://github.com/AsterAether/CharacterCustomizerPlus/blob/master/config_values.md)
+
+## TODO
+
+* Reimplement live-update
+* Check multiplayer compatability
 
 ## Changelog
 

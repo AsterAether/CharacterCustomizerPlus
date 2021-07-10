@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using CharacterCustomizer.Util.Config;
 using CharacterCustomizer.Util.Reflection;
 using Mono.Cecil.Cil;
@@ -13,8 +14,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
 {
     public class CustomPlusEngineer : CustomPlusSurvivor
     {
-        public CustomPlusEngineer(ConfigFile file) : base(RoR2.SurvivorIndex.Engi, "Engineer",
-            file)
+        public CustomPlusEngineer(ConfigFile file, ManualLogSource logger) : base("Engi", file, logger)
         {
         }
 
@@ -37,7 +37,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
         public List<IFieldChanger> ChargeGrenadesFields;
 
 
-        public override void InitConfigValues()
+        protected override void InitConfigValues()
         {
             TurretMaxDeployCount = BindConfigInt("TurretMaxDeployCount",
                 "The maximum number of turrets the Engineer can place.");
@@ -81,7 +81,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             };
         }
 
-        public override void OverrideGameValues()
+        protected override void OverrideGameValues()
         {
             TurretMaxDeployCount.UpdateDescription(2);
             ShieldMaxDeployCount.UpdateDescription(1);
@@ -102,8 +102,8 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             {
                 On.EntityStates.Engi.EngiWeapon.FireGrenades.OnEnter += (orig, self) =>
                 {
-                    Assembly assembly = self.GetType().Assembly;
-                    Type fireGrenades = assembly.GetClass("EntityStates.Engi.EngiWeapon", "FireGrenades");
+                    var fireGrenades =
+                        self.GetType().Assembly.GetClass("EntityStates.Engi.EngiWeapon", "FireGrenades");
 
                     orig(self);
                     self.SetFieldValue("duration",
@@ -114,33 +114,29 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
                 };
             }
 
-            On.RoR2.RoR2Application.Start += (orig, self) =>
+
+            var shieldDeployed = typeof(EntityStates.Engi.EngiBubbleShield.Deployed);
+
+            ShieldDeployedFields.ForEach(changer => changer.Apply(shieldDeployed));
+            if (ShieldEndlessDuration.Value)
             {
-                orig(self);
-                Assembly assembly = self.GetType().Assembly;
+                EntityStates.Engi.EngiBubbleShield.Deployed.lifetime = float.PositiveInfinity;
+            }
 
-                Type shieldDeployed = typeof(EntityStates.Engi.EngiBubbleShield.Deployed);
+            var chargeGrenades = SurvivorDef.GetType().Assembly
+                .GetClass("EntityStates.Engi.EngiWeapon", "ChargeGrenades");
 
-                ShieldDeployedFields.ForEach(changer => changer.Apply(shieldDeployed));
-                if (ShieldEndlessDuration.Value)
-                {
-                    EntityStates.Engi.EngiBubbleShield.Deployed.lifetime = float.PositiveInfinity;
-                }
+            ChargeGrenadesFields.ForEach(changer => changer.Apply(chargeGrenades));
 
-                Type chargeGrenades = assembly.GetClass("EntityStates.Engi.EngiWeapon", "ChargeGrenades");
-
-                ChargeGrenadesFields.ForEach(changer => changer.Apply(chargeGrenades));
-
-                if (GrenadeSetChargeCountToFireAmount.Value &&
-                    GrenadeMaxFireAmount.ConfigEntryDescriptionWrapper.IsNotDefault())
-                {
-                    chargeGrenades.SetFieldValue("maxCharges",
-                        GrenadeMaxFireAmount.ConfigEntryDescriptionWrapper.Value);
-                }
-            };
+            if (GrenadeSetChargeCountToFireAmount.Value &&
+                GrenadeMaxFireAmount.ConfigEntryDescriptionWrapper.IsNotDefault())
+            {
+                chargeGrenades.SetFieldValue("maxCharges",
+                    GrenadeMaxFireAmount.ConfigEntryDescriptionWrapper.Value);
+            }
         }
 
-        public override void WriteNewHooks()
+        protected override void WriteNewHooks()
         {
         }
     }

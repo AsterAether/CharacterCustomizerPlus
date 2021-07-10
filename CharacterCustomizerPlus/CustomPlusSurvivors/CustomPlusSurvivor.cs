@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using CharacterCustomizer.CustomSurvivors;
@@ -10,47 +11,77 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors
     public abstract class CustomPlusSurvivor
     {
         public readonly List<IMarkdownString> MarkdownConfigEntries = new List<IMarkdownString>();
-        private ConfigFile Config { get; set; }
-        public string CharacterName { get; }
-        public SurvivorIndex SurvivorIndex { get; }
+        public ConfigEntry<bool> Enabled { get; private set; }
+        public ConfigEntry<bool> UpdateVanillaValues { get; private set; }
+        protected ConfigFile Config { get; set; }
+        protected ManualLogSource Logger { get; set; }
 
-        protected CustomPlusSurvivor(SurvivorIndex index, string characterName, ConfigFile file)
+        protected SurvivorDef SurvivorDef { get; private set; }
+
+        public string CommonName { get; private set; }
+        public string CachedName { get; private set; }
+
+        protected CustomPlusSurvivor(string cachedName, ConfigFile file, ManualLogSource logger)
         {
             Config = file;
-            SurvivorIndex = index;
-
-            CharacterName = characterName;
+            Logger = logger;
+            CachedName = cachedName;
         }
 
-        public void Patch()
+        public void InitContent(SurvivorDef survivorDef)
         {
+            SurvivorDef = survivorDef;
+
+            CommonName = Regex.Replace(Language.english.GetLocalizedStringByToken(survivorDef.displayNameToken),
+                @"[^A-Za-z]+", string.Empty);
+            
+            Enabled = Config.Bind(
+                CommonName,
+                CommonName + " Enabled",
+                false,
+                "If changes for this character are enabled. Set to true to generate options on next startup!");
+
+            if (!Enabled.Value) return;
+
+            UpdateVanillaValues = Config.Bind(
+                CommonName,
+                CommonName + " UpdateVanillaValues",
+                true,
+                "Write default values in descriptions of settings. Will flip to false after doing it once.");
+            
             InitConfigValues();
 
             OverrideGameValues();
             WriteNewHooks();
         }
 
-        public abstract void InitConfigValues();
+        protected abstract void InitConfigValues();
 
-        public abstract void OverrideGameValues();
+        protected abstract void OverrideGameValues();
 
-        public abstract void WriteNewHooks();
+        protected abstract void WriteNewHooks();
 
-        public ConfigEntryDescriptionWrapper<T> BindConfig<T>(string key, T defaultVal,
+        public void OnStop()
+        {
+            if (UpdateVanillaValues != null)
+                UpdateVanillaValues.Value = false;
+        }
+
+        protected ConfigEntryDescriptionWrapper<T> BindConfig<T>(string key, T defaultVal,
             string description)
         {
-            ConfigEntryDescriptionWrapper<T> entry =
-                new ConfigEntryDescriptionWrapper<T>(Config.Bind(CharacterName, key, defaultVal, description));
+            var entry =
+                new ConfigEntryDescriptionWrapper<T>(Config.Bind(CommonName, key, defaultVal, description), UpdateVanillaValues.Value);
             MarkdownConfigEntries.Add(entry);
             return entry;
         }
 
-        public ConfigEntryDescriptionWrapper<bool> BindConfigBool(string key, string description, bool defVal = false)
+        protected ConfigEntryDescriptionWrapper<bool> BindConfigBool(string key, string description, bool defVal = false)
         {
             return BindConfig(key, defVal, description);
         }
 
-        public ConfigEntryDescriptionWrapper<float> BindConfigFloat(string key, string description, float defVal = 0f)
+        protected ConfigEntryDescriptionWrapper<float> BindConfigFloat(string key, string description, float defVal = 0f)
         {
             return BindConfig(key, defVal, description);
         }
