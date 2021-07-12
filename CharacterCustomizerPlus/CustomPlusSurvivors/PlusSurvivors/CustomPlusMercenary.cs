@@ -10,7 +10,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
     {
         private readonly FieldChangerBag _dashFields;
 
-        public CustomPlusMercenary(ConfigFile file, ManualLogSource logger) : base("Mercenary", file, logger)
+        public CustomPlusMercenary(ConfigFile file, ManualLogSource logger) : base("Merc", file, logger)
         {
             _dashFields = new FieldChangerBag(this);
         }

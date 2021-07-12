@@ -22,7 +22,7 @@ namespace CharacterCustomizerPlus
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInDependency("AsterAether.CharacterCustomizer")]
-    [BepInPlugin("AsterAether.CharacterCustomizerPlus", "CharacterCustomizerPlus", "0.3.1")]
+    [BepInPlugin("AsterAether.CharacterCustomizerPlus", "CharacterCustomizerPlus", "<version>")]
     [R2APISubmoduleDependency(nameof(SurvivorAPI))]
     public class CharacterCustomizerPlus : BaseUnityPlugin
     {

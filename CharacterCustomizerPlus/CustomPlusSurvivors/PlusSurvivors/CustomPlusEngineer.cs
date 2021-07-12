@@ -117,8 +117,8 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
 
 
             // Workaround for more than 8 max grenades
-            if (_chargeGrenadesFields.GetValueByFieldName<float>("minGrenadeCount") >= 8 ||
-                _chargeGrenadesFields.GetValueByFieldName<float>("maxGrenadeCount") >= 8)
+            if (_chargeGrenadesFields.GetValueByFieldName<int>("minGrenadeCount") >= 8 ||
+                _chargeGrenadesFields.GetValueByFieldName<int>("maxGrenadeCount") >= 8)
             {
                 On.EntityStates.Engi.EngiWeapon.FireGrenades.OnEnter += (orig, self) =>
                 {
@@ -150,10 +150,10 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors
             _chargeGrenadesFields.Apply(chargeGrenades);
 
             if (GrenadeSetChargeCountToFireAmount.Value &&
-                _chargeGrenadesFields.GetWrapperByFieldName<float>("maxGrenadeCount").IsNotDefault())
+                _chargeGrenadesFields.GetWrapperByFieldName<int>("maxGrenadeCount").IsNotDefault())
             {
                 chargeGrenades.SetFieldValue("maxCharges",
-                    _chargeGrenadesFields.GetValueByFieldName<float>("maxGrenadeCount"));
+                    _chargeGrenadesFields.GetValueByFieldName<int>("maxGrenadeCount"));
             }
         }
 
