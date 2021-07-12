@@ -8,6 +8,7 @@ using BepInEx.Configuration;
 using CharacterCustomizer.Util.Config;
 using CharacterCustomizerPlus.CustomPlusSurvivors;
 using CharacterCustomizerPlus.CustomPlusSurvivors.PlusSurvivors;
+using EntityStates.Bandit2.Weapon;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
@@ -20,20 +21,57 @@ using UnityEngine;
 namespace CharacterCustomizerPlus
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInDependency("Aster.CharacterCustomizer")]
-    [BepInPlugin("Aster.CharacterCustomizerPlus", "CharacterCustomizerPlus", "<version>")]
+    [BepInDependency("AsterAether.CharacterCustomizer")]
+    [BepInPlugin("AsterAether.CharacterCustomizerPlus", "CharacterCustomizerPlus", "0.3.1")]
     [R2APISubmoduleDependency(nameof(SurvivorAPI))]
     public class CharacterCustomizerPlus : BaseUnityPlugin
     {
         private List<CustomPlusSurvivor> _plusSurvivors;
 
-        private ConfigEntry<bool> CreateReadme;
+        private ConfigEntry<bool> CreateReadme { get; set; }
+        private ConfigEntry<KeyCode> ReloadConfigButton { get; set; }
 
+        private void Awake()
+        {
+            Config.SaveOnConfigSet = false;
+            
+            CreateReadme = Config.Bind(
+                "General",
+                "PrintReadme",
+                false,
+                "Outputs a file called \"config_values.md\" to the working directory, containing all config values formatted as Markdown. (Only used for development purposes)");
+
+            ReloadConfigButton = Config.Bind(
+                    "General",
+                    "ReloadConfigButton",
+                    KeyCode.F8,
+                    "Loads the config from disk and applies all changes.");
+            
+            
+            _plusSurvivors = new List<CustomPlusSurvivor>
+            {
+                new CustomPlusCommando(Config, Logger),
+                new CustomPlusEngineer(Config, Logger),
+                new CustomPlusHuntress(Config, Logger),
+                new CustomPlusMercenary(Config, Logger)
+            };
+
+            On.RoR2.RoR2Application.OnLoad += AfterLoad;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(ReloadConfigButton.Value))
+            {
+                Config.Reload();
+            }
+        }
 
         private IEnumerator AfterLoad(On.RoR2.RoR2Application.orig_OnLoad orig, RoR2Application self)
         {
             yield return orig(self);
 
+            ApplyGeneralSettings();
 
             foreach (var survivorDef in ContentManager.survivorDefs)
             {
@@ -72,20 +110,9 @@ namespace CharacterCustomizerPlus
                 markdown.ToString());
         }
 
-        private void Awake()
+        private void ApplyGeneralSettings()
         {
-            CreateReadme = Config.Bind(
-                "General",
-                "PrintReadme",
-                false,
-                "Outputs a file called \"config_values.md\" to the working directory, containing all config values formatted as Markdown. (Only used for development purposes)");
-            _plusSurvivors = new List<CustomPlusSurvivor>
-            {
-                new CustomPlusCommando(Config, Logger),
-                new CustomPlusEngineer(Config, Logger)
-            };
-
-            On.RoR2.RoR2Application.OnLoad += AfterLoad;
+            
         }
 
         private void OnDestroy()

@@ -8,7 +8,7 @@ using RoR2;
 
 namespace CharacterCustomizerPlus.CustomPlusSurvivors
 {
-    public abstract class CustomPlusSurvivor
+    public abstract class CustomPlusSurvivor : IConfigProvider
     {
         public readonly List<IMarkdownString> MarkdownConfigEntries = new List<IMarkdownString>();
         public ConfigEntry<bool> Enabled { get; private set; }
@@ -34,7 +34,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors
 
             CommonName = Regex.Replace(Language.english.GetLocalizedStringByToken(survivorDef.displayNameToken),
                 @"[^A-Za-z]+", string.Empty);
-            
+
             Enabled = Config.Bind(
                 CommonName,
                 CommonName + " Enabled",
@@ -48,7 +48,7 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors
                 CommonName + " UpdateVanillaValues",
                 true,
                 "Write default values in descriptions of settings. Will flip to false after doing it once.");
-            
+
             InitConfigValues();
 
             OverrideGameValues();
@@ -67,28 +67,25 @@ namespace CharacterCustomizerPlus.CustomPlusSurvivors
                 UpdateVanillaValues.Value = false;
         }
 
-        protected ConfigEntryDescriptionWrapper<T> BindConfig<T>(string key, T defaultVal,
+        public string GetSectionName()
+        {
+            return CommonName;
+        }
+
+        public ConfigEntryDescriptionWrapper<T> BindConfig<T>(string key, T defaultVal,
             string description)
         {
             var entry =
-                new ConfigEntryDescriptionWrapper<T>(Config.Bind(CommonName, key, defaultVal, description), UpdateVanillaValues.Value);
+                new ConfigEntryDescriptionWrapper<T>(Config.Bind(CommonName, key, defaultVal, description),
+                    UpdateVanillaValues.Value);
             MarkdownConfigEntries.Add(entry);
             return entry;
         }
 
-        protected ConfigEntryDescriptionWrapper<bool> BindConfigBool(string key, string description, bool defVal = false)
+        public ConfigEntryDescriptionWrapper<T> BindConfig<T>(string key,
+            string description)
         {
-            return BindConfig(key, defVal, description);
-        }
-
-        protected ConfigEntryDescriptionWrapper<float> BindConfigFloat(string key, string description, float defVal = 0f)
-        {
-            return BindConfig(key, defVal, description);
-        }
-
-        public ConfigEntryDescriptionWrapper<int> BindConfigInt(string key, string description, int defVal = 0)
-        {
-            return BindConfig(key, defVal, description);
+            return BindConfig<T>(key, default, description);
         }
     }
 }
